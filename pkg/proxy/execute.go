@@ -269,7 +269,7 @@ func execute(ctx context.Context, req *http.Request, car *vehicle.Vehicle, comma
 			case "front":
 				return car.OpenFrunk(ctx)
 			case "rear":
-				return car.OpenTrunk(ctx)
+				return car.ActuateTrunk(ctx)
 			default:
 				return &protocol.NominalError{
 					Details: protocol.NewError("invalid_value", false, false),
