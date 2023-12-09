@@ -1,19 +1,19 @@
 all: build
 
-format:
-	git describe --tags --abbrev=0 | sed 's/v//' > pkg/account/version.txt
+set-version:
+	if TAG=$$(git describe --tags --abbrev=0); then echo "$${TAG}" | sed 's/v//' > pkg/account/version.txt; fi
+
+format: set-version
 	go fmt ./...
-.PHONY: format
 
-test: format
-	go test ./...
+test: 
+	go test -cover ./...
 	go vet ./...
-.PHONY: test
 
-build: test
+build: set-version test
 	go build ./...
-.PHONY: build
 
 install: test
 	go install ./cmd/...
-.PHONY: install
+
+.PHONY: install build test format set-version

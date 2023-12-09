@@ -1,5 +1,6 @@
 # Tesla Vehicle Command SDK
 [![Go Reference](https://pkg.go.dev/badge/github.com/teslamotors/vehicle-command/pkg.svg)](https://pkg.go.dev/github.com/teslamotors/vehicle-command/pkg)
+[![Build and Test](https://github.com/teslamotors/vehicle-command/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/teslamotors/vehicle-command/actions/workflows/build.yml)
 
 Tesla vehicles now support a protocol that provides end-to-end command
 authentication. This Golang package uses the new protocol to control vehicle
@@ -162,7 +163,8 @@ Here's the enrollment process from the owner's perspective:
 
 In order for this process to work, you must register a domain name that
 identifies your application. The Tesla app will display this domain name to the
-user when it asks if they wish to approve your request.
+user when it asks if they wish to approve your request, and the vehicle will
+display the domain name next to the key in the Locks screen.
 
 Follow the instructions to [register your public key and
 domain](https://developer.tesla.com/docs/fleet-api#register).
@@ -172,7 +174,7 @@ in the above example.
 Once your public key is successfully registered, provide vehicle owners with a
 link to `https://tesla.com/_ak/<your_domain_name>`. For example, if you
 registered `example.com`, provide a link to
-`https://tesla.com/_ak/example.com`. The official Tesla iPhone or Android mobile app (version 4.25.5 or above)
+`https://tesla.com/_ak/example.com`. The official Tesla iPhone or Android mobile app (version 4.27.3 or above)
 will handle the rest. Customers with more than one Tesla product must select the desired vehicle before clicking
 the link or scanning the QR code.
 
@@ -183,7 +185,9 @@ purposes, you can create a self-signed localhost server certificate using
 OpenSSL:
 
 ```
-openssl req -x509 -nodes -newkey ec -pkeyopt ec_paramgen_curve:secp521r1 \
+openssl req -x509 -nodes -newkey ec \
+    -pkeyopt ec_paramgen_curve:secp521r1 \
+    -pkeyopt ec_param_enc:named_curve  \
     -subj '/CN=localhost' \
     -keyout key.pem -out cert.pem -sha256 -days 3650 \
     -addext "extendedKeyUsage = serverAuth" \
