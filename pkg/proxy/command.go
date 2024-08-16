@@ -49,6 +49,16 @@ func ExtractCommandAction(ctx context.Context, command string, params RequestPar
 		return func(v *vehicle.Vehicle) error { return v.SetVolume(ctx, float32(volume)) }, nil
 	case "remote_boombox":
 		return nil, ErrCommandNotImplemented
+	case "media_next_fav":
+		return nil, ErrCommandNotImplemented
+	case "media_next_track":
+		return nil, ErrCommandNotImplemented
+	case "media_prev_fav":
+		return nil, ErrCommandNotImplemented
+	case "media_prev_track":
+		return nil, ErrCommandNotImplemented
+	case "media_volume_down":
+		return nil, ErrCommandNotImplemented
 	case "media_toggle_playback":
 		return func(v *vehicle.Vehicle) error { return v.ToggleMediaPlayback(ctx) }, nil
 	// Climate Controls
@@ -158,12 +168,12 @@ func ExtractCommandAction(ctx context.Context, command string, params RequestPar
 			case "front":
 				return func(v *vehicle.Vehicle) error { return v.OpenFrunk(ctx) }, nil
 			case "rear":
-				return func(v *vehicle.Vehicle) error { return v.OpenTrunk(ctx) }, nil
+				return func(v *vehicle.Vehicle) error { return v.ActuateTrunk(ctx) }, nil
 			default:
 				return nil, &protocol.NominalError{Details: protocol.NewError("invalid_value", false, false)}
 			}
 		}
-		return func(v *vehicle.Vehicle) error { return v.OpenTrunk(ctx) }, nil
+		return func(v *vehicle.Vehicle) error { return v.ActuateTrunk(ctx) }, nil
 	case "charge_port_door_open":
 		return func(v *vehicle.Vehicle) error { return v.ChargePortOpen(ctx) }, nil
 	case "charge_port_door_close":
@@ -344,6 +354,10 @@ func ExtractCommandAction(ctx context.Context, command string, params RequestPar
 	// end-to-end authentication.
 	case "navigation_request":
 		return nil, ErrCommandUseRESTAPI
+	case "navigation_gps_request":
+		return nil, ErrCommandUseRESTAPI
+	case "navigation_sc_request":
+		return nil, ErrCommandUseRESTAPI
 	case "window_control":
 		// Latitude and longitude are not required for vehicles that support this protocol.
 		cmd, err := params.getString("command", true)
@@ -358,6 +372,18 @@ func ExtractCommandAction(ctx context.Context, command string, params RequestPar
 		default:
 			return nil, errors.New("command must be 'vent' or 'close'")
 		}
+	case "remote_auto_steering_wheel_heat_climate_request":
+		return nil, ErrCommandUseRESTAPI
+	case "sun_roof_control":
+		return nil, ErrCommandUseRESTAPI
+	case "take_drivenote":
+		return nil, ErrCommandUseRESTAPI
+	case "upcoming_calendar_entries":
+		return nil, ErrCommandUseRESTAPI
+	case "clear_pin_to_drive_admin":
+		return nil, ErrCommandUseRESTAPI
+	case "erase_user_data":
+		return nil, ErrCommandUseRESTAPI
 	default:
 		return nil, &inet.HttpError{Code: http.StatusBadRequest, Message: "{\"response\":null,\"error\":\"invalid_command\",\"error_description\":\"\"}"}
 	}
